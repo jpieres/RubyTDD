@@ -14,4 +14,9 @@ describe Checkout do
     co.must_respond_to :scan
   end
 
+  it "should respond_to total method" do
+    co = Checkout.new
+    co.must_respond_to :total
+  end
+
 end
