@@ -4,6 +4,7 @@ class Checkout
   end
 
   def total
+    0
   end
   
 end
