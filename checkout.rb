@@ -11,10 +11,9 @@ class Checkout
   end
 
   def total
-    items = @items
     @pricing_rules.each do |pricing_rule|
-      pricing_rule.action.call(items) if pricing_rule.condition.call(items)
+      pricing_rule.action.call(@items) if pricing_rule.condition.call(@items)
     end
-    sum = @items.inject(0) {|sum, item| sum + item.price}  
+    @items.inject(0) {|sum, item| sum + item.price}  
   end 
 end

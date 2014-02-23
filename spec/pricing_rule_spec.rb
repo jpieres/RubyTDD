@@ -34,4 +34,6 @@ describe PricingRule do
     pr.action.must_equal action
   end
 
+  # TODO add more specs to test and document :condition and :action attr
+
 end

@@ -50,3 +50,9 @@ Total price expected: £3.11
 
 Basket: SR1,SR1,GR1,SR1  
 Total price expected: £16.61
+
+
+Implementation
+--------------
+
+Two classes have been defined: ```Checkout``` and ```PricingRule```.
