@@ -34,6 +34,12 @@ describe PricingRule do
     pr.action.must_equal action
   end
 
-  # TODO add more specs to test and document :condition and :action attr
+  # TODO add more specs to test and document :condition and :action attributes
+  # Attribute condition: should be passed a Proc with a enumerable collection of objects
+  #                      as parameter. Each object in the collection should respond to
+  #                      messages code and price.
+  # Attribute    action: should be passed a Proc with a enumerable collection of objects
+  #                      as parameter. Each object in the collection should respond to
+  #                      messages code and price.
 
 end

@@ -56,3 +56,8 @@ Implementation
 --------------
 
 Two classes have been defined: ```Checkout``` and ```PricingRule```.
+
+### PricingRule Class
+
+
+### Checkout Class
