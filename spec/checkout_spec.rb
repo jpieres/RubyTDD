@@ -51,7 +51,55 @@ describe Checkout do
       item2.verify
     end
 
-    it "should apply pricing rules when given"
-  end
+    describe "fulfills all test data scenarios" do
+      before do 
+        @pricing_rule1 = PricingRule.new code: 'GR1',
+          condition: Proc.new { |items| items.count {|item| item.code == 'GR1'} >= 2 },
+          action: Proc.new { |items| items.find_all{ |item| item.code == 'GR1' }.each_with_index { |item, i| item.price = 0 if i.odd? } }
+        @pricing_rule2 = PricingRule.new code: 'SR1',
+          condition: Proc.new { |items| items.count { |item| item.code == 'SR1'} >= 3 },
+          action: Proc.new { |items| items.each { |item| item.price = 4.5 if item.code == 'SR1'}}
+        
+        @item1 = OpenStruct.new code: 'GR1', name: 'Green Tea', price: 3.11
+        @item2 = OpenStruct.new code: 'SR1', name: 'Strawberries', price: 5.00
+        @item3 = OpenStruct.new code: 'CF1', name: 'Coffe', price: 11.23 
+      end
 
+      it "should apply pricing rule buy-one-get-one-free" do
+        items =  [@item1, @item1.clone, @item1.clone]
+        @co.pricing_rules = [@pricing_rule1]
+        items.each { |item| @co.scan item }
+        @co.total.must_equal 3.11*2
+      end
+
+      it "should apply pricing rule discount prices based on item count" do
+        items =  [@item2, @item2.clone, @item2.clone]
+        co = Checkout.new([@pricing_rule2])
+        items.each { |item| co.scan item }
+        co.total.must_equal 4.5*3
+      end
+
+
+      it "should fulfill test data scenario 1" do
+        items =  [@item1, @item2, @item1.clone, @item1.clone, @item3]
+        co = Checkout.new([@pricing_rule1, @pricing_rule2])
+        items.each { |item| co.scan item }
+        co.total.must_equal 22.45
+      end
+
+      it "should fulfill test data scenario 2" do
+        items =  [@item1, @item1.clone]
+        co = Checkout.new([@pricing_rule1, @pricing_rule2])
+        items.each { |item| co.scan item }
+        co.total.must_equal 3.11
+      end
+
+      it "should fulfill test data scenario 3" do
+        items =  [@item2, @item2.clone, @item1, @item2.clone]
+        co = Checkout.new([@pricing_rule1, @pricing_rule2])
+        items.each { |item| co.scan item }
+        co.total.must_equal 16.61
+      end
+    end
+  end
 end

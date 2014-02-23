@@ -1,6 +1,7 @@
 class Checkout
   
-  def initialize(pricing_rules = nil)
+  attr_accessor :items, :pricing_rules
+  def initialize(pricing_rules = [])
     @pricing_rules = pricing_rules
     @items = []
   end
@@ -10,7 +11,10 @@ class Checkout
   end
 
   def total
-    @items.inject(0) {|sum, element| sum + element.price}
-  end
-  
+    items = @items
+    @pricing_rules.each do |pricing_rule|
+      pricing_rule.action.call(items) if pricing_rule.condition.call(items)
+    end
+    sum = @items.inject(0) {|sum, item| sum + item.price}  
+  end 
 end
