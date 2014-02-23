@@ -66,40 +66,45 @@ describe Checkout do
       end
 
       it "should apply pricing rule buy-one-get-one-free" do
-        items =  [@item1, @item1.clone, @item1.clone]
-        @co.pricing_rules = [@pricing_rule1]
-        items.each { |item| @co.scan item }
-        @co.total.must_equal 3.11*2
+        items = [@item1, @item1.clone, @item1.clone]
+        pricing_rules = [@pricing_rule1]
+        target = 3.11*2
+        total_must_equal_target(items, pricing_rules, target)
       end
 
       it "should apply pricing rule discount prices based on item count" do
-        items =  [@item2, @item2.clone, @item2.clone]
-        co = Checkout.new([@pricing_rule2])
-        items.each { |item| co.scan item }
-        co.total.must_equal 4.5*3
+        items = [@item2, @item2.clone, @item2.clone]
+        pricing_rules = [@pricing_rule2]
+        target = 4.5*3
+        total_must_equal_target(items, pricing_rules, target)
       end
 
-
       it "should fulfill test data scenario 1" do
-        items =  [@item1, @item2, @item1.clone, @item1.clone, @item3]
-        co = Checkout.new([@pricing_rule1, @pricing_rule2])
-        items.each { |item| co.scan item }
-        co.total.must_equal 22.45
+        items = [@item1, @item2, @item1.clone, @item1.clone, @item3]
+        pricing_rules = [@pricing_rule1, @pricing_rule2]
+        target = 22.45
+        total_must_equal_target(items, pricing_rules, target)
       end
 
       it "should fulfill test data scenario 2" do
-        items =  [@item1, @item1.clone]
-        co = Checkout.new([@pricing_rule1, @pricing_rule2])
-        items.each { |item| co.scan item }
-        co.total.must_equal 3.11
+        items = [@item1, @item1.clone]
+        pricing_rules = [@pricing_rule1, @pricing_rule2]
+        target = 3.11
+        total_must_equal_target(items, pricing_rules, target)
       end
 
       it "should fulfill test data scenario 3" do
-        items =  [@item2, @item2.clone, @item1, @item2.clone]
-        co = Checkout.new([@pricing_rule1, @pricing_rule2])
-        items.each { |item| co.scan item }
-        co.total.must_equal 16.61
+        items =   [@item2, @item2.clone, @item1, @item2.clone]
+        pricing_rules = [@pricing_rule1, @pricing_rule2]
+        target = 16.61
+        total_must_equal_target(items, pricing_rules, target)
       end
     end
+  end
+
+  def total_must_equal_target(items, pricing_rules, target)
+    @co.pricing_rules = pricing_rules
+    items.each { |item| @co.scan item }
+    @co.total.must_equal target
   end
 end
